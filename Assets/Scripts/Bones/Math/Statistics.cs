@@ -26,17 +26,17 @@ namespace Bones.Math
         /// <returns>The covariance 3x3 matrix</returns>
         public static Mat3x3 ComputeCovarianceMatrix(Vector3[] points, Vector3 barycenter)
         {
-            float[] x = points.Select((a) => a.x).ToArray();
-            float[] y = points.Select((a) => a.y).ToArray();
-            float[] z = points.Select((a) => a.z).ToArray();
-            float covXY = Cov(x, y, barycenter.x, barycenter.y);
-            float covXZ = Cov(x, z, barycenter.x, barycenter.z);
-            float covYZ = Cov(y, z, barycenter.y, barycenter.z);
+            float[] X = points.Select((a) => a.x).ToArray();
+            float[] Y = points.Select((a) => a.y).ToArray();
+            float[] Z = points.Select((a) => a.z).ToArray();
+            float covXY = Cov(X, Y, barycenter.x, barycenter.y);
+            float covXZ = Cov(X, Z, barycenter.x, barycenter.z);
+            float covYZ = Cov(Y, Z, barycenter.y, barycenter.z);
 
             return new Mat3x3(
-                Var(x, barycenter.x), covXY, covXZ,
-                covXY, Var(y, barycenter.y), covYZ,
-                covXZ, covYZ, Var(z, barycenter.z)
+                Var(X, barycenter.x), covXY, covXZ,
+                covXY, Var(Y, barycenter.y), covYZ,
+                covXZ, covYZ, Var(Z, barycenter.z)
             );
         }
 

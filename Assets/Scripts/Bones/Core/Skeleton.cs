@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Bones.Core
 {
@@ -8,22 +7,23 @@ namespace Bones.Core
     /// </summary>
     public sealed class Skeleton : MonoBehaviour
     {
-        #region Unity Fields
-
-        [SerializeField]
-        [Tooltip("Bones of the skeleton")]
-        private Bone[] _bones;
+        #region Fields
 
         #endregion
 
-        #region Unity Callbacks
+        #region Public Methods
 
         /// <summary>
-        /// Fired on script awake
+        /// Initializes the skeleton and its bones
         /// </summary>
-        private void Awake()
+        public void Initialize(Vector3[] leftArmVertices)
         {
-            this.Initialize();
+            Bone leftArm = this.CreateBone(leftArmVertices);
+
+            // TD : Raccordement à faire entre les bones
+            // Deux possibilités :
+            // - tout doit être générique dès l'import du mesh, la partie convexe devra être taggée avec la partie du corps à laquelle elle correspond et le raccordement devra évaluer les possibilités, <-
+            // - l'utilisateur indique qu'une certaine partie convexe correspond à une certaine partie du corps et le raccordement sera directement hardcodé
         }
 
         #endregion
@@ -31,17 +31,18 @@ namespace Bones.Core
         #region Private Methods
 
         /// <summary>
-        /// Initializes the skeleton and its bones
+        /// Creates a bone as a child and initializes it
         /// </summary>
-        private void Initialize()
+        /// <param name="vertices">A point cloud</param>
+        /// <returns>The newly created and initialized bone</returns>
+        private Bone CreateBone(Vector3[] vertices, string name = "Bone")
         {
-            foreach (Bone bone in this._bones) bone.Initialize();
+            Bone bone = new GameObject(name).AddComponent<Bone>();
 
-            // TD : Raccordement à faire entre les bones
-            // Deux possibilités :
-            // - tout doit être générique dès l'import du mesh, la partie convexe devra être taggée avec la partie du corps à laquelle elle correspond et le raccordement devra évaluer les possibilités,
-            // - l'utilisateur indique qu'une certaine partie convexe correspond à une certaine partie du corps et le raccordement sera directement hardcodé
+            bone.transform.SetParent(this.transform);
+            bone.Initialize(vertices);
 
+            return bone;
         }
 
         #endregion

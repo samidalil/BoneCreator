@@ -11,7 +11,7 @@ namespace Bones.Math
         /// </summary>
         /// <param name="points">The point cloud</param>
         /// <returns>The weighted sum of the points' positions</returns>
-        public static Vector3 ComputeBarycenter(Point[] points) => points.Aggregate(Vector3.zero, (a, b) => a + b.Position) / points.Length;
+        public static Vector3 ComputeBarycenter(Vector3[] points) => points.Aggregate((a, b) => a + b) / points.Length;
 
         /// <summary>
         /// Searches for the extremums of the projection of a point cloud on a given vector

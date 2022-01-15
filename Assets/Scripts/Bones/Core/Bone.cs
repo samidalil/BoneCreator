@@ -12,14 +12,6 @@ namespace Bones.Core
     {
         // TD : Le tableau de points sera retiré par la suite, voir comment diviser un mesh en plusieurs parties convexes
 
-        #region Unity Fields
-
-        [SerializeField]
-        [Tooltip("Point cloud used to generate the bone")]
-        private Point[] _points = null;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -41,7 +33,11 @@ namespace Bones.Core
 
         #region Fields
 
-        private float _lastUpdate;
+        private Vector3 _debugBarycenter;
+        private Vector3[] _debugCenteredPoints;
+        private Vector3[] _debugPoints;
+        private Vector3 _debugProperVector;
+
         private (Vector3, Vector3) _primaryComponent;
 
         #endregion
@@ -49,24 +45,29 @@ namespace Bones.Core
         #region Unity Callbacks
 
         /// <summary>
-        /// Fired on script awake
+        /// Fired on draw gizmos tick
         /// </summary>
-        private void Awake()
+        private void OnDrawGizmos()
         {
-            // Automatic initialization
-            if (this._points == null || this._points.Length == 0) this.FillWithChildrens();
+            Gizmos.color = Color.yellow;
 
-            foreach (Point point in this._points) point.OnPositionChanged += this.OnPointPositionChanged;
+            Gizmos.DrawSphere(this._debugBarycenter, 0.01f);
 
-            this._lastUpdate = Time.time;
-        }
+            if (this._debugPoints != null)
+            {
+                Gizmos.color = Color.blue;
 
-        /// <summary>
-        /// Fired on script destruction
-        /// </summary>
-        private void OnDestroy()
-        {
-            foreach (Point point in this._points) point.OnPositionChanged -= this.OnPointPositionChanged;
+                foreach (Vector3 point in this._debugPoints)
+                    Gizmos.DrawSphere(point, 0.001f);
+            }
+
+            Gizmos.color = Color.green;
+
+            Gizmos.DrawLine(this._debugBarycenter, this._debugBarycenter + this._debugProperVector);
+
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawLine(this._primaryComponent.Item1, this._primaryComponent.Item2);
         }
 
         #endregion
@@ -74,45 +75,22 @@ namespace Bones.Core
         #region Public Methods
 
         /// <summary>
-        /// Initializes the point cloud with the childrens of the game object the script is attached to
-        /// </summary>
-        public void FillWithChildrens()
-        {
-            this._points = this.transform.GetComponentsInChildren<Point>();
-        }
-
-        /// <summary>
         /// Initializes the bone
         /// </summary>
-        public void Initialize()
+        public void Initialize(Vector3[] points)
         {
+            this._debugPoints = points;
+
             // Compute barycenter -> Center -> Compute covariance matrix
 
-            Vector3 barycenter = Geometry.ComputeBarycenter(this._points);
-            Vector3[] points = this._points.Select(p => p.Position - barycenter).ToArray();
-            Mat3x3 covarianceMatrix = Statistics.ComputeCovarianceMatrix(points, barycenter);
+            Vector3 barycenter = this._debugBarycenter = Geometry.ComputeBarycenter(points);
+            Vector3[] centeredPoints = this._debugCenteredPoints = points.Select(p => p - barycenter).ToArray();
+            Mat3x3 covarianceMatrix = Statistics.ComputeCovarianceMatrix(centeredPoints, barycenter);
 
             // Compute approximation of the matrix's proper vector -> Retrieve repositionned extremums of the projected points
 
-            Vector3 properVector = Statistics.ComputeProperVectorApproximation(covarianceMatrix, 50);
-            this._primaryComponent = Geometry.RetrieveProjectedExtremums(points, properVector, barycenter);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Fired on a point's position changed
-        /// </summary>
-        /// <param name="point">Moved point</param>
-        private void OnPointPositionChanged(Point point)
-        {
-            if (Time.time != this._lastUpdate)
-            {
-                this._lastUpdate = Time.time;
-                // this.Initialize();
-            }
+            Vector3 properVector = this._debugProperVector = Statistics.ComputeProperVectorApproximation(covarianceMatrix, 50);
+            this._primaryComponent = Geometry.RetrieveProjectedExtremums(centeredPoints, properVector, barycenter);
         }
 
         #endregion

@@ -10,7 +10,7 @@ namespace Bones.Data
         // COMMENT : Nous avons implémenté seulement les opérations dont nous avions besoin
         // à l'exception de l'opérateur crochet pour déboguer plus rapidement
 
-        // TD : Transformer en struct (créer un champ par valeur de la matrice)
+        // TD : créer un champ par valeur de la matrice pour éviter un double déréférencement
 
         #region Fields
 

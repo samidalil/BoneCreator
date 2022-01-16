@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 116502762}
   - component: {fileID: 116502761}
   m_Layer: 0
-  m_Name: Skeleton
+  m_Name: Mesh Extractor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,10 +149,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 116502760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2dcf67890d5ed146899301ce0f59712, type: 3}
+  m_Script: {fileID: 11500000, guid: f502988259103ee48a0896554c4b8f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mesh: {fileID: -3702037217650275473, guid: fde45475b67b1a5448e10990fabd5556, type: 3}
+  _mesh: {fileID: -3702037217650275473, guid: 69e1d3d9106cf9e48aa3fc6c294ca492, type: 3}
 --- !u!4 &116502762
 Transform:
   m_ObjectHideFlags: 0

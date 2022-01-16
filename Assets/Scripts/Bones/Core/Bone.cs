@@ -25,7 +25,7 @@ namespace Bones.Core
         public Vector3 PositiveExtremum => this._primaryComponent.Item2;
 
         /// <summary>
-        /// Gets the computed primary component alias a segment from the negative extremum to the positive extremum of an approximated proper vector
+        /// Gets the computed primary component alias a segment from the negative extremum to the positive extremum of an approximated eigen vector
         /// </summary>
         public (Vector3, Vector3) PrimaryComponent => this._primaryComponent;
 
@@ -34,9 +34,7 @@ namespace Bones.Core
         #region Fields
 
         private Vector3 _debugBarycenter;
-        private Vector3[] _debugCenteredPoints;
         private Vector3[] _debugPoints;
-        private Vector3 _debugProperVector;
 
         private (Vector3, Vector3) _primaryComponent;
 
@@ -61,10 +59,6 @@ namespace Bones.Core
                     Gizmos.DrawSphere(point, 0.001f);
             }
 
-            Gizmos.color = Color.green;
-
-            Gizmos.DrawLine(this._debugBarycenter, this._debugBarycenter + this._debugProperVector);
-
             Gizmos.color = Color.red;
 
             Gizmos.DrawLine(this._primaryComponent.Item1, this._primaryComponent.Item2);
@@ -84,13 +78,13 @@ namespace Bones.Core
             // Compute barycenter -> Center -> Compute covariance matrix
 
             Vector3 barycenter = this._debugBarycenter = Geometry.ComputeBarycenter(points);
-            Vector3[] centeredPoints = this._debugCenteredPoints = points.Select(p => p - barycenter).ToArray();
-            Mat3x3 covarianceMatrix = Statistics.ComputeCovarianceMatrix(centeredPoints, barycenter);
+            Vector3[] centeredPoints = points.Select(p => p - barycenter).ToArray();
+            Mat3x3 covarianceMatrix = Statistics.ComputeCovarianceMatrix(points, barycenter);
 
-            // Compute approximation of the matrix's proper vector -> Retrieve repositionned extremums of the projected points
+            // Compute approximation of the matrix's eigen vector -> Retrieve repositionned extremums of the projected points
 
-            Vector3 properVector = this._debugProperVector = Statistics.ComputeProperVectorApproximation(covarianceMatrix, 50);
-            this._primaryComponent = Geometry.RetrieveProjectedExtremums(centeredPoints, properVector, barycenter);
+            Vector3 eigenVector = Statistics.ComputeEigenVectorApproximation(covarianceMatrix, 50);
+            this._primaryComponent = Geometry.RetrieveProjectedExtremums(centeredPoints, eigenVector, barycenter);
         }
 
         #endregion

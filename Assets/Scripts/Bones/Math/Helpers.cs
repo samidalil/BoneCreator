@@ -18,9 +18,11 @@ namespace Bones.Math
             if (xAbs < yAbs)
             {
                 if (yAbs < zAbs) return vector.z;
+
                 return vector.y;
             }
             if (xAbs < zAbs) return vector.z;
+
             return vector.x;
         }
     }

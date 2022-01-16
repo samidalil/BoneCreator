@@ -13,10 +13,6 @@ namespace Bones.Core
         [Tooltip("Humanoid mesh")]
         private Mesh _mesh;
 
-        [SerializeField]
-        [Tooltip("Skeleton to initialize")]
-        private Skeleton _skeleton;
-
         #endregion
 
         #region Unity Callbacks

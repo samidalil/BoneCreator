@@ -7,12 +7,12 @@ namespace Bones.Math
     public static class Statistics
     {
         /// <summary>
-        /// Returns an approximation of the proper vector of a covariance matrix
+        /// Returns an approximation of the eigen vector of a covariance matrix
         /// </summary>
         /// <param name="covarianceMatrix">A 3x3 covariance matrix</param>
         /// <param name="iterations">The more iterations, the more accurate the approximation is</param>
-        /// <returns>An approximation of the proper vector normalized</returns>
-        public static Vector3 ComputeProperVectorApproximation(Mat3x3 covarianceMatrix, int iterations) =>
+        /// <returns>An approximation of the eigen vector normalized</returns>
+        public static Vector3 ComputeEigenVectorApproximation(Mat3x3 covarianceMatrix, int iterations) =>
             Enumerable
                 .Range(0, iterations)
                 .Aggregate(covarianceMatrix * new Vector3(0, 0, 1), (vector, _) => covarianceMatrix * vector / Helpers.GetGreatestAbsoluteComponent(vector))

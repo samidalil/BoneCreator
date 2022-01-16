@@ -10,9 +10,11 @@ namespace Bones.Data
         // COMMENT : Nous avons implémenté seulement les opérations dont nous avions besoin
         // à l'exception de l'opérateur crochet pour déboguer plus rapidement
 
+        // TD : Transformer en struct (créer un champ par valeur de la matrice)
+
         #region Fields
 
-        private float[] _data;
+        private float[,] _data;
 
         #endregion
 
@@ -23,7 +25,11 @@ namespace Bones.Data
         /// </summary>
         public Mat3x3(float x1, float x2, float x3, float y1, float y2, float y3, float z1, float z2, float z3)
         {
-            this._data = new float[] { x1, x2, x3, y1, y2, y3, z1, z2, z3 };
+            this._data = new float[,] {
+                { x1, x2, x3 },
+                { y1, y2, y3 },
+                { z1, z2, z3 }
+            };
         }
 
         /// <summary>
@@ -36,17 +42,6 @@ namespace Bones.Data
         #region Operators
 
         /// <summary>
-        /// Gets or sets the element at the given index
-        /// </summary>
-        /// <param name="i">Matrix index</param>
-        /// <returns></returns>
-        public float this[int i]
-        {
-            get => this._data[i];
-            set => this._data[i] = value;
-        }
-
-        /// <summary>
         /// Gets or sets the element at the given row and column
         /// </summary>
         /// <param name="x">Row index</param>
@@ -54,8 +49,8 @@ namespace Bones.Data
         /// <returns></returns>
         public float this[int x, int y]
         {
-            get => this._data[x * 3 + y];
-            set => this._data[x * 3 + y] = value;
+            get => this._data[x, y];
+            set => this._data[x, y] = value;
         }
 
         /// <summary>
@@ -67,12 +62,29 @@ namespace Bones.Data
         public static Vector3 operator *(Mat3x3 matrix, Vector3 vector) =>
             new Vector3(
                 // a * x + b * y + c * z
-                matrix._data[0] * vector.x + matrix._data[1] * vector.y + matrix._data[2] * vector.z,
+                matrix._data[0, 0] * vector.x + matrix._data[0, 1] * vector.y + matrix._data[0, 2] * vector.z,
                 // d * x + e * y + f * z
-                matrix._data[3] * vector.x + matrix._data[4] * vector.y + matrix._data[5] * vector.z,
+                matrix._data[1, 0] * vector.x + matrix._data[1, 1] * vector.y + matrix._data[1, 2] * vector.z,
                 // g * x + h * y + i * z
-                matrix._data[6] * vector.x + matrix._data[7] * vector.y + matrix._data[8] * vector.z
+                matrix._data[2, 0] * vector.x + matrix._data[2, 1] * vector.y + matrix._data[2, 2] * vector.z
             );
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Converts to a human-readable string
+        /// </summary>
+        /// <returns>A string to display</returns>
+        public override string ToString()
+        {
+            return $"[" +
+                $"({this._data[0, 0]}, {this._data[0, 1]}, {this._data[0, 2]})," +
+                $"({this._data[1, 0]}, {this._data[1, 1]}, {this._data[1, 2]})," +
+                $"({this._data[2, 0]}, {this._data[2, 1]}, {this._data[2, 2]})" +
+                $"]";
+        }
 
         #endregion
     }

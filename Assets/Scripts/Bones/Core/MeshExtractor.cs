@@ -3,7 +3,7 @@
 namespace Bones.Core
 {
     /// <summary>
-    /// Extracts the body parts of the given mesh
+    /// Extracts automatically the body parts of the given mesh
     /// </summary>
     public sealed class MeshExtractor : MonoBehaviour
     {
@@ -37,7 +37,22 @@ namespace Bones.Core
         {
             Skeleton skeleton = new GameObject("Skeleton").AddComponent<Skeleton>();
 
-            skeleton.Initialize(this._mesh.vertices);
+            skeleton.Initialize(
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices,
+                this._mesh.vertices
+            );
         }
 
         #endregion

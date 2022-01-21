@@ -145,8 +145,19 @@ namespace Bones.Core
             this._rig.Add(joint.transform);
 
             joint.transform.position = position;
+            joint.AddComponent<Rigidbody>();
 
-            if (parent) joint.transform.SetParent(parent.transform);
+            if (parent)
+            {
+                joint.transform.SetParent(parent.transform);
+                
+                CharacterJoint characterJoint = joint.AddComponent<CharacterJoint>();
+                characterJoint.connectedBody = parent.GetComponent<Rigidbody>();
+
+                CapsuleCollider collider = joint.AddComponent<CapsuleCollider>();
+                collider.height = joint.transform.localPosition.magnitude;
+                collider.radius = 0.05f;
+            }
             return joint;
         }
 

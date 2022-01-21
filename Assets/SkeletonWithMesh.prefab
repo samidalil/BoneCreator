@@ -1743,7 +1743,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2dcf67890d5ed146899301ce0f59712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epsilon: 0.010000001
+  _components: []
+  _debug: 0
+  _epsilonSquared: 0
   _rig:
   - {fileID: 7893465633031053344}
   - {fileID: 7893465632329882977}
@@ -1766,6 +1768,27 @@ MonoBehaviour:
   - {fileID: 7893465631875819525}
   - {fileID: 7893465632980262300}
   _rootBone: {fileID: 7893465633031053344}
+  _skinnedMeshRenderer: {fileID: 0}
+  leftForeleg: {fileID: 0}
+  leftFootStart: {fileID: 0}
+  leftFootEnd: {fileID: 0}
+  rightForeleg: {fileID: 0}
+  rightFootStart: {fileID: 0}
+  rightFootEnd: {fileID: 0}
+  hips: {fileID: 0}
+  leftLeg: {fileID: 0}
+  rightLeg: {fileID: 0}
+  leftForearm: {fileID: 0}
+  leftHandStart: {fileID: 0}
+  leftHandEnd: {fileID: 0}
+  rightForearm: {fileID: 0}
+  rightHandStart: {fileID: 0}
+  rightHandEnd: {fileID: 0}
+  torso: {fileID: 0}
+  leftArm: {fileID: 0}
+  rightArm: {fileID: 0}
+  head: {fileID: 0}
+  headEnd: {fileID: 0}
 --- !u!114 &7893465632710066933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1779,8 +1802,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _body: {fileID: 7893465631984196944}
+  _direction: {x: 0, y: 1, z: 1}
   _force: 8000
-  _rotationSpeed: 0.5
+  _rotationSensitivity: 70
 --- !u!1 &7893465632849664510
 GameObject:
   m_ObjectHideFlags: 0

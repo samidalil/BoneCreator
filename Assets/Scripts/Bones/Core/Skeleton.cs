@@ -47,39 +47,39 @@ namespace Bones.Core
         /// Initializes the skeleton and its bones
         /// </summary>
         public void Initialize(
-            Vector3[] headVertices,
-            Vector3[] bodyVertices,
-            Vector3[] leftUpperArmVertices,
-            Vector3[] leftForearmVertices,
-            Vector3[] leftHandVertices,
-            Vector3[] rightUpperArmVertices,
-            Vector3[] rightForearmVertices,
-            Vector3[] rightHandVertices,
-            Vector3[] leftLegVertices,
-            Vector3[] leftForelegVertices,
-            Vector3[] leftFootVertices,
-            Vector3[] rightLegVertices,
-            Vector3[] rightForelegVertices,
-            Vector3[] rightFootVertices,
+            Mesh headMesh,
+            Mesh bodyMesh,
+            Mesh leftUpperArmMesh,
+            Mesh leftForearmMesh,
+            Mesh leftHandMesh,
+            Mesh rightUpperArmMesh,
+            Mesh rightForearmMesh,
+            Mesh rightHandMesh,
+            Mesh leftLegMesh,
+            Mesh leftForelegMesh,
+            Mesh leftFootMesh,
+            Mesh rightLegMesh,
+            Mesh rightForelegMesh,
+            Mesh rightFootMesh,
             float epsilon
         )
         {
             this.epsilon = epsilon;
 
-            Segment headPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(headVertices);
-            Segment bodyPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(bodyVertices);
-            Segment leftUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftUpperArmVertices);
-            Segment leftForearmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftForearmVertices);
-            Segment leftHandPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftHandVertices);
-            Segment rightUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightUpperArmVertices);
-            Segment rightForearmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightForearmVertices);
-            Segment rightHandPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightHandVertices);
-            Segment leftLegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftLegVertices);
-            Segment leftForelegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftForelegVertices);
-            Segment leftFootPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftFootVertices);
-            Segment rightLegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightLegVertices);
-            Segment rightForelegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightForelegVertices);
-            Segment rightFootPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightFootVertices);
+            Segment headPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(headMesh.vertices);
+            Segment bodyPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(bodyMesh.vertices);
+            Segment leftUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftUpperArmMesh.vertices);
+            Segment leftForearmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftForearmMesh.vertices);
+            Segment leftHandPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftHandMesh.vertices);
+            Segment rightUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightUpperArmMesh.vertices);
+            Segment rightForearmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightForearmMesh.vertices);
+            Segment rightHandPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightHandMesh.vertices);
+            Segment leftLegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftLegMesh.vertices);
+            Segment leftForelegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftForelegMesh.vertices);
+            Segment leftFootPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftFootMesh.vertices);
+            Segment rightLegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightLegMesh.vertices);
+            Segment rightForelegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightForelegMesh.vertices);
+            Segment rightFootPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightFootMesh.vertices);
 
             // Hips
 
@@ -87,9 +87,9 @@ namespace Bones.Core
             Link(rightLegPrimaryComponent, rightForelegPrimaryComponent, epsilon);
 
             Segment hipSegment = new Segment(leftLegPrimaryComponent.Start, rightLegPrimaryComponent.Start);
-            GameObject hips = CreateJointObject(hipSegment.Center, "Hips");
+            GameObject hips = CreateJointObject(hipSegment.Center, null, "Hips");
 
-            GameObject leftLeg = CreateJointObject(hipSegment.Start, "Left Leg", hips);
+            GameObject leftLeg = CreateJointObject(hipSegment.Start, leftLegMesh, "Left Leg", hips);
             GameObject leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, "Left Foreleg");
             GameObject leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, "Left Foot Start");
             GameObject leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, "Left Foot End", leftFootStart);
@@ -131,33 +131,24 @@ namespace Bones.Core
 
         #region Private Static Methods
 
-        private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, string name)
+        private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, Mesh mesh, string name)
         {
             return Link(parent, child, this.epsilon)
-                ? CreateJointObject(parent.End, name, parentJoint)
-                : CreateJointObject(child.Start, name, CreateJointObject(child.End, $"intermediate-{name}", parentJoint));
+                ? CreateJointObject(parent.End, mesh, name, parentJoint)
+                : CreateJointObject(child.Start, mesh, name, CreateJointObject(child.End, mesh, $"intermediate-{name}", parentJoint));
         }
 
-        private GameObject CreateJointObject(Vector3 position, string name, GameObject parent = null)
+        private GameObject CreateJointObject(Vector3 position, Mesh mesh, string name, GameObject parent = null)
         {
             GameObject joint = new GameObject(name);
 
             this._rig.Add(joint.transform);
 
             joint.transform.position = position;
-            joint.AddComponent<Rigidbody>();
+            joint.AddComponent<MeshFilter>().mesh = mesh;
+            joint.AddComponent<MeshRenderer>();
 
-            if (parent)
-            {
-                joint.transform.SetParent(parent.transform);
-                
-                CharacterJoint characterJoint = joint.AddComponent<CharacterJoint>();
-                characterJoint.connectedBody = parent.GetComponent<Rigidbody>();
-
-                CapsuleCollider collider = joint.AddComponent<CapsuleCollider>();
-                collider.height = joint.transform.localPosition.magnitude;
-                collider.radius = 0.05f;
-            }
+            if (parent) joint.transform.SetParent(parent.transform);
             return joint;
         }
 

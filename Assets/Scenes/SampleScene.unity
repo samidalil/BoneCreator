@@ -1310,6 +1310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 949318519}
   - component: {fileID: 949318518}
+  - component: {fileID: 949318520}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -1329,6 +1330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2dcf67890d5ed146899301ce0f59712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  epsilon: 0.010000001
   _rig:
   - {fileID: 27574253}
   - {fileID: 513385473}
@@ -1351,7 +1353,6 @@ MonoBehaviour:
   - {fileID: 411858091}
   - {fileID: 427259967}
   _rootBone: {fileID: 27574253}
-  epsilon: 0.010000001
 --- !u!4 &949318519
 Transform:
   m_ObjectHideFlags: 0
@@ -1367,6 +1368,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &949318520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949318517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acffdca8e2f9df94092994ba53a443cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _body: {fileID: 27574251}
+  _force: 10000
 --- !u!1 &953675266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1763,9 +1778,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2dcf67890d5ed146899301ce0f59712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  epsilon: 0
   _rig: []
   _rootBone: {fileID: 0}
-  epsilon: 0
 --- !u!4 &1269574324
 Transform:
   m_ObjectHideFlags: 0

@@ -11,6 +11,10 @@ namespace Bones.Game
         private Rigidbody _body = null;
 
         [SerializeField]
+        [Tooltip("Base direction for launch")]
+        private Vector3 _direction = Vector3.up + Vector3.forward;
+
+        [SerializeField]
         [Tooltip("Force to apply")]
         private float _force;
 
@@ -21,8 +25,6 @@ namespace Bones.Game
         #endregion
 
         #region Fields
-
-        private Vector3 _direction = Vector3.up + Vector3.forward;
 
         private bool _launch = false;
 

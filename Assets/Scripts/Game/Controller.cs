@@ -14,9 +14,15 @@ namespace Bones.Game
         [Tooltip("Force to apply")]
         private float _force;
 
+        [SerializeField]
+        [Tooltip("Launch axis rotation speed")]
+        private float _rotationSpeed;
+
         #endregion
 
         #region Fields
+
+        private Vector3 _direction = Vector3.one + Vector3.forward;
 
         private bool _launch = false;
 
@@ -25,17 +31,23 @@ namespace Bones.Game
         #region Unity Callbacks
 
         /// <summary>
+        /// Fired on draw gizmos tick
+        /// </summary>
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(this._body.transform.position, this._body.transform.position + this._direction.normalized);
+        }
+
+        /// <summary>
         /// Fired on every physics tick
         /// </summary>
         private void FixedUpdate()
         {
             if (this._launch)
             {
-                Debug.Log("In");
-
                 this._launch = false;
-
-                this._body.AddForce((Vector3.up + Vector3.forward) * this._force);
+                this._body.AddForce(this._direction.normalized * this._force);
             }
         }
 
@@ -46,6 +58,9 @@ namespace Bones.Game
         {
             if (!this._launch)
                 this._launch = Input.GetKeyDown(KeyCode.Space);
+
+            float rotation = Input.GetAxis("Horizontal");
+
         }
 
         #endregion

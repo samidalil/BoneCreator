@@ -1381,7 +1381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _body: {fileID: 27574251}
-  _force: 10000
+  _force: 8000
 --- !u!1 &953675266
 GameObject:
   m_ObjectHideFlags: 0

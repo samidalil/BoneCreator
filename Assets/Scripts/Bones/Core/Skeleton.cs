@@ -140,13 +140,13 @@ namespace Bones.Core
 
         private GameObject CreateJointObject(Vector3 position, Mesh mesh, string name, GameObject parent = null)
         {
-            GameObject joint = new GameObject(name);
+            GameObject joint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
-            this._rig.Add(joint.transform);
-
+            joint.transform.localScale = Vector3.one * 0.2f;
+            joint.name = name;
             joint.transform.position = position;
-            joint.AddComponent<MeshFilter>().mesh = mesh;
-            joint.AddComponent<MeshRenderer>();
+            
+            this._rig.Add(joint.transform);
 
             if (parent) joint.transform.SetParent(parent.transform);
             return joint;

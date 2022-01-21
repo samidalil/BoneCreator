@@ -37,20 +37,20 @@ namespace Bones.Core
             Skeleton skeleton = new GameObject("Skeleton").AddComponent<Skeleton>();
 
             skeleton.Initialize(
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
-                this._mesh.vertices,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
+                this._mesh,
                 0.1f
             );
         }

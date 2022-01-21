@@ -90,14 +90,14 @@ namespace Bones.Core
             GameObject hips = CreateJointObject(hipSegment.Center, null, "Hips");
 
             GameObject leftLeg = CreateJointObject(hipSegment.Start, leftLegMesh, "Left Leg", hips);
-            GameObject leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, "Left Foreleg");
-            GameObject leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, "Left Foot Start");
-            GameObject leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, "Left Foot End", leftFootStart);
+            GameObject leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, leftForelegMesh, "Left Foreleg");
+            GameObject leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, leftFootMesh, "Left Foot Start");
+            GameObject leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, null, "Left Foot End", leftFootStart);
 
-            GameObject rightLeg = CreateJointObject(hipSegment.End, "Right Leg", hips);
-            GameObject rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, "Right Foreleg");
-            GameObject rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, "Right Foot Start");
-            GameObject rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, "Right Foot End", rightFootStart);
+            GameObject rightLeg = CreateJointObject(hipSegment.End, rightLegMesh, "Right Leg", hips);
+            GameObject rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, rightForelegMesh, "Right Foreleg");
+            GameObject rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, rightFootMesh, "Right Foot Start");
+            GameObject rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, null, "Right Foot End", rightFootStart);
 
             // Torso
 
@@ -105,22 +105,22 @@ namespace Bones.Core
             Link(rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, epsilon);
 
             Segment shoulderSegment = new Segment(leftUpperArmPrimaryComponent.Start, rightUpperArmPrimaryComponent.Start);
-            GameObject torso = CreateJointObject(shoulderSegment.Center, "Torso", hips);
+            GameObject torso = CreateJointObject(shoulderSegment.Center, bodyMesh, "Torso", hips);
 
-            GameObject leftArm = CreateJointObject(shoulderSegment.Start, "Left Arm", torso);
-            GameObject leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, "Left Forearm");
-            GameObject leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, "Left Hand Start");
-            GameObject leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, "Left Hand End", leftHandStart);
+            GameObject leftArm = CreateJointObject(shoulderSegment.Start, leftUpperArmMesh, "Left Arm", torso);
+            GameObject leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, leftForearmMesh, "Left Forearm");
+            GameObject leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, leftHandMesh, "Left Hand Start");
+            GameObject leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, null, "Left Hand End", leftHandStart);
 
-            GameObject rightArm = CreateJointObject(shoulderSegment.End, "Right Arm", torso);
-            GameObject rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, "Right Forearm");
-            GameObject rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, "Right Hand Start");
-            GameObject rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, "Right Hand End", rightHandStart);
+            GameObject rightArm = CreateJointObject(shoulderSegment.End, rightUpperArmMesh, "Right Arm", torso);
+            GameObject rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, rightForearmMesh, "Right Forearm");
+            GameObject rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, rightHandMesh, "Right Hand Start");
+            GameObject rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, null, "Right Hand End", rightHandStart);
 
             // Head
 
-            GameObject head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, "Head Start");
-            GameObject headEnd = CreateJointObject(headPrimaryComponent.End, "Head End", head);
+            GameObject head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, headMesh, "Head Start");
+            GameObject headEnd = CreateJointObject(headPrimaryComponent.End, null, "Head End", head);
 
             hips.transform.SetParent(this.transform);
 

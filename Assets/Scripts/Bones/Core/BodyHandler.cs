@@ -88,20 +88,20 @@ namespace Bones.Core
             Skeleton skeleton = new GameObject("Skeleton").AddComponent<Skeleton>();
 
             skeleton.Initialize(
-                this._head.vertices,
-                this._body.vertices,
-                this._leftUpperArm.vertices,
-                this._leftForearm.vertices,
-                this._leftHand.vertices,
-                this._rightUpperArm.vertices,
-                this._rightForearm.vertices,
-                this._rightHand.vertices,
-                this._leftLeg.vertices,
-                this._leftForeleg.vertices,
-                this._leftFoot.vertices,
-                this._rightLeg.vertices,
-                this._rightForeleg.vertices,
-                this._rightFoot.vertices,
+                this._head,
+                this._body,
+                this._leftUpperArm,
+                this._leftForearm,
+                this._leftHand,
+                this._rightUpperArm,
+                this._rightForearm,
+                this._rightHand,
+                this._leftLeg,
+                this._leftForeleg,
+                this._leftFoot,
+                this._rightLeg,
+                this._rightForeleg,
+                this._rightFoot,
                 this._epsilon * this._epsilon
             );
         }

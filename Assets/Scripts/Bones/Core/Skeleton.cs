@@ -11,10 +11,18 @@ namespace Bones.Core
     public sealed class Skeleton : MonoBehaviour
     {
         #region Unity Fields
+
+        [SerializeField]
+        [Tooltip("Generated bones")]
+        private List<Segment> _components = new List<Segment>();
+
+        [SerializeField]
+        [Tooltip("Is Debugging ?")]
+        private bool _debug;
         
         [SerializeField]
         [Tooltip("Epsilon used to generate the skeleton")]
-        private float epsilon;
+        private float _epsilonSquared;
 
         [SerializeField]
         [Tooltip("Bones list")]
@@ -23,6 +31,29 @@ namespace Bones.Core
         [SerializeField]
         [Tooltip("Usually hips bone")]
         private Transform _rootBone = null;
+
+        [SerializeField] private SkinnedMeshRenderer _skinnedMeshRenderer;
+
+        [SerializeField] private GameObject leftForeleg;
+        [SerializeField] private GameObject leftFootStart;
+        [SerializeField] private GameObject leftFootEnd;
+        [SerializeField] private GameObject rightForeleg;
+        [SerializeField] private GameObject rightFootStart;
+        [SerializeField] private GameObject rightFootEnd;
+        [SerializeField] private GameObject hips;
+        [SerializeField] private GameObject leftLeg;
+        [SerializeField] private GameObject rightLeg;
+        [SerializeField] private GameObject leftForearm;
+        [SerializeField] private GameObject leftHandStart;
+        [SerializeField] private GameObject leftHandEnd;
+        [SerializeField] private GameObject rightForearm;
+        [SerializeField] private GameObject rightHandStart;
+        [SerializeField] private GameObject rightHandEnd;
+        [SerializeField] private GameObject torso;
+        [SerializeField] private GameObject leftArm;
+        [SerializeField] private GameObject rightArm;
+        [SerializeField] private GameObject head;
+        [SerializeField] private GameObject headEnd;
 
         #endregion
 
@@ -33,15 +64,86 @@ namespace Bones.Core
         /// </summary>
         private void OnDrawGizmos()
         {
+            if (!this._debug) return;
+
             Gizmos.color = Color.yellow;
 
             foreach (Transform bone in this._rig)
                 Gizmos.DrawSphere(bone.position, 0.01f);
+
+            Gizmos.color = Color.red;
+
+            foreach (Segment segment in this._components)
+                Gizmos.DrawLine(segment.Start, segment.End);
         }
 
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Assigns bones to a Mixamo Skinned Mesh Renderer
+        /// </summary>
+        public void AssignBones()
+        {
+            Transform[] bones = new Transform[]
+            {
+                this.hips.transform,
+                this.rightLeg.transform,
+                this.leftLeg.transform,
+                this.headEnd.transform,
+                this.head.transform,
+                this.leftArm.transform,
+                null,
+                null,
+                null,
+                this.leftForeleg.transform,
+                this.leftFootStart.transform,
+                this.leftFootEnd.transform,
+                this.torso.transform,
+                this.leftForearm.transform,
+                this.leftHandStart.transform,
+                null,
+                null,
+                null,
+                this.leftHandEnd.transform,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                this.rightArm.transform,
+                this.rightForeleg.transform,
+                this.rightFootEnd.transform,
+                this.rightFootStart.transform,
+                this.rightForearm.transform,
+                this.rightHandStart.transform,
+                this.rightHandEnd.transform,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            };
+
+            this._skinnedMeshRenderer.bones = bones;
+        }
 
         /// <summary>
         /// Initializes the skeleton and its bones
@@ -64,7 +166,9 @@ namespace Bones.Core
             float epsilon
         )
         {
-            this.epsilon = epsilon;
+            this._epsilonSquared = epsilon;
+
+            Debug.Log("TEST");
 
             Segment headPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(headMesh.vertices);
             Segment bodyPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(bodyMesh.vertices);
@@ -87,17 +191,17 @@ namespace Bones.Core
             Link(rightLegPrimaryComponent, rightForelegPrimaryComponent, epsilon);
 
             Segment hipSegment = new Segment(leftLegPrimaryComponent.Start, rightLegPrimaryComponent.Start);
-            GameObject hips = CreateJointObject(hipSegment.Center, null, "Hips");
+            this.hips = CreateJointObject(hipSegment.Center, null, "Hips");
 
-            GameObject leftLeg = CreateJointObject(hipSegment.Start, leftLegMesh, "Left Leg", hips);
-            GameObject leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, leftForelegMesh, "Left Foreleg");
-            GameObject leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, leftFootMesh, "Left Foot Start");
-            GameObject leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, null, "Left Foot End", leftFootStart);
+            this.leftLeg = CreateJointObject(hipSegment.Start, leftLegMesh, "Left Leg", hips);
+            this.leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, leftForelegMesh, "Left Foreleg");
+            this.leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, leftFootMesh, "Left Foot Start");
+            this.leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, null, "Left Foot End", leftFootStart);
 
-            GameObject rightLeg = CreateJointObject(hipSegment.End, rightLegMesh, "Right Leg", hips);
-            GameObject rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, rightForelegMesh, "Right Foreleg");
-            GameObject rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, rightFootMesh, "Right Foot Start");
-            GameObject rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, null, "Right Foot End", rightFootStart);
+            this.rightLeg = CreateJointObject(hipSegment.End, rightLegMesh, "Right Leg", hips);
+            this.rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, rightForelegMesh, "Right Foreleg");
+            this.rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, rightFootMesh, "Right Foot Start");
+            this.rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, null, "Right Foot End", rightFootStart);
 
             // Torso
 
@@ -105,22 +209,22 @@ namespace Bones.Core
             Link(rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, epsilon);
 
             Segment shoulderSegment = new Segment(leftUpperArmPrimaryComponent.Start, rightUpperArmPrimaryComponent.Start);
-            GameObject torso = CreateJointObject(shoulderSegment.Center, bodyMesh, "Torso", hips);
+            this.torso = CreateJointObject(shoulderSegment.Center, bodyMesh, "Torso", hips);
 
-            GameObject leftArm = CreateJointObject(shoulderSegment.Start, leftUpperArmMesh, "Left Arm", torso);
-            GameObject leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, leftForearmMesh, "Left Forearm");
-            GameObject leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, leftHandMesh, "Left Hand Start");
-            GameObject leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, null, "Left Hand End", leftHandStart);
+            this.leftArm = CreateJointObject(shoulderSegment.Start, leftUpperArmMesh, "Left Arm", torso);
+            this.leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, leftForearmMesh, "Left Forearm");
+            this.leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, leftHandMesh, "Left Hand Start");
+            this.leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, null, "Left Hand End", leftHandStart);
 
-            GameObject rightArm = CreateJointObject(shoulderSegment.End, rightUpperArmMesh, "Right Arm", torso);
-            GameObject rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, rightForearmMesh, "Right Forearm");
-            GameObject rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, rightHandMesh, "Right Hand Start");
-            GameObject rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, null, "Right Hand End", rightHandStart);
+            this.rightArm = CreateJointObject(shoulderSegment.End, rightUpperArmMesh, "Right Arm", torso);
+            this.rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, rightForearmMesh, "Right Forearm");
+            this.rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, rightHandMesh, "Right Hand Start");
+            this.rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, null, "Right Hand End", rightHandStart);
 
             // Head
 
-            GameObject head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, headMesh, "Head Start");
-            GameObject headEnd = CreateJointObject(headPrimaryComponent.End, null, "Head End", head);
+            this.head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, headMesh, "Head Start");
+            this.headEnd = CreateJointObject(headPrimaryComponent.End, null, "Head End", head);
 
             hips.transform.SetParent(this.transform);
 
@@ -133,7 +237,7 @@ namespace Bones.Core
 
         private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, Mesh mesh, string name)
         {
-            return Link(parent, child, this.epsilon)
+            return Link(parent, child, this._epsilonSquared)
                 ? CreateJointObject(parent.End, mesh, name, parentJoint)
                 : CreateJointObject(child.Start, mesh, name, CreateJointObject(child.End, mesh, $"intermediate-{name}", parentJoint));
         }

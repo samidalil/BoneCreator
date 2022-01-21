@@ -12,8 +12,7 @@ namespace Bones.Core
     {
         #region Unity Fields
 
-        [SerializeField]
-        private SkinnedMeshRenderer _skinnedMeshRenderer;
+        [SerializeField] private SkinnedMeshRenderer _skinnedMeshRenderer;
 
         [SerializeField] private GameObject leftForeleg;
         [SerializeField] private GameObject leftFootStart;
@@ -38,15 +37,43 @@ namespace Bones.Core
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets the skinned mesh renderer state
+        /// </summary>
+        public bool HasSkinnedMeshRenderer => this._skinnedMeshRenderer != null;
+
+        #endregion
+
         #region Fields
 
         private List<Transform> _rig = new List<Transform>();
+        private float epsilon;
 
         #endregion
 
         #region Unity Callbacks
 
-        private void Start()
+        /// <summary>
+        /// Fired on draw gizmos tick
+        /// </summary>
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+
+            foreach (Transform bone in this._rig)
+                Gizmos.DrawSphere(bone.position, 0.01f);
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Assigns a Mixamo Skinned Mesh Renderer's bones
+        /// </summary>
+        public void AssignBones()
         {
             Transform[] bones = new Transform[]
             {
@@ -104,23 +131,21 @@ namespace Bones.Core
                 null
             };
 
+            /*
+            foreach (Transform bone in bones)
+            {
+                BoneWeight boneWeight = new BoneWeight();
+                float value = bone != null ? 1 : 0;
+
+                boneWeight.weight0 = value;
+                boneWeight.weight1 = value;
+                boneWeight.weight2 = value;
+                boneWeight.weight3 = value;
+            }
+            */
+
             this._skinnedMeshRenderer.bones = bones;
         }
-
-        /// <summary>
-        /// Fired on draw gizmos tick
-        /// </summary>
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-
-            foreach (Transform bone in this._rig)
-                Gizmos.DrawSphere(bone.position, 0.01f);
-        }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Initializes the skeleton and its bones
@@ -139,9 +164,12 @@ namespace Bones.Core
             Vector3[] leftFootVertices,
             Vector3[] rightLegVertices,
             Vector3[] rightForelegVertices,
-            Vector3[] rightFootVertices
+            Vector3[] rightFootVertices,
+            float epsilon
         )
         {
+            this.epsilon = epsilon;
+
             Segment headPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(headVertices);
             Segment bodyPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(bodyVertices);
             Segment leftUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftUpperArmVertices);
@@ -209,7 +237,7 @@ namespace Bones.Core
 
         private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, string name)
         {
-            return Link(parent, child)
+            return Link(parent, child, this.epsilon)
                 ? CreateJointObject(parent.End, name, parentJoint)
                 : CreateJointObject(child.Start, name, CreateJointObject(child.End, $"intermediate-{name}", parentJoint));
         }
@@ -232,7 +260,7 @@ namespace Bones.Core
         /// <param name="parent">Parent bone's segment</param>
         /// <param name="child">Child bone's segment</param>
         /// <returns>True if distance between the two bones is negligeable</returns>
-        private static bool Link(Segment parent, Segment child)
+        private static bool Link(Segment parent, Segment child, float epsilon)
         {
             int parentClosestPointIndex = 0;
             int childClosestPointIndex = 0;
@@ -267,7 +295,7 @@ namespace Bones.Core
                 child.End = tmp;
             }
 
-            if (minDistance < 0.1f)
+            if (minDistance < epsilon)
             {
                 Vector3 center = child.Start + (parent.End - child.Start) / 2;
                 parent.End = center;

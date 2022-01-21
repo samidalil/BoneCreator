@@ -9,6 +9,11 @@ namespace Bones.Core
     {
         #region Unity Fields
 
+        [Header("Settings")]
+        [SerializeField]
+        [Tooltip("Epsilon for the distance between two bones")]
+        private float _epsilon;
+
         [Header("Head")]
         [SerializeField]
         [Tooltip("Head mesh of a humanoid")]
@@ -96,7 +101,8 @@ namespace Bones.Core
                 this._leftFoot.vertices,
                 this._rightLeg.vertices,
                 this._rightForeleg.vertices,
-                this._rightFoot.vertices
+                this._rightFoot.vertices,
+                this._epsilon * this._epsilon
             );
         }
 

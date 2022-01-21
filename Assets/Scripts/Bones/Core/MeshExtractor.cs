@@ -29,7 +29,6 @@ namespace Bones.Core
 
         #region Private Methods
 
-
         /// <summary>
         /// Initializes the skeleton with the mesh parts
         /// </summary>
@@ -51,7 +50,8 @@ namespace Bones.Core
                 this._mesh.vertices,
                 this._mesh.vertices,
                 this._mesh.vertices,
-                this._mesh.vertices
+                this._mesh.vertices,
+                0.1f
             );
         }
 

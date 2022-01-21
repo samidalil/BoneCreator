@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Bones.Data
 {
     /// <summary>
     /// Represents a segment between two points
     /// </summary>
+    [Serializable]
     public sealed class Segment
     {
         #region Properties

@@ -168,8 +168,6 @@ namespace Bones.Core
         {
             this._epsilonSquared = epsilon;
 
-            Debug.Log("TEST");
-
             Segment headPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(headMesh.vertices);
             Segment bodyPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(bodyMesh.vertices);
             Segment leftUpperArmPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(leftUpperArmMesh.vertices);
@@ -185,23 +183,38 @@ namespace Bones.Core
             Segment rightForelegPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightForelegMesh.vertices);
             Segment rightFootPrimaryComponent = Geometry.GenerateApproximatedPrimaryComponent(rightFootMesh.vertices);
 
+            this._components.Add(headPrimaryComponent);
+            this._components.Add(bodyPrimaryComponent);
+            this._components.Add(leftUpperArmPrimaryComponent);
+            this._components.Add(leftForearmPrimaryComponent);
+            this._components.Add(leftHandPrimaryComponent);
+            this._components.Add(rightUpperArmPrimaryComponent);
+            this._components.Add(rightForearmPrimaryComponent);
+            this._components.Add(rightHandPrimaryComponent);
+            this._components.Add(leftLegPrimaryComponent);
+            this._components.Add(leftForelegPrimaryComponent);
+            this._components.Add(leftFootPrimaryComponent);
+            this._components.Add(rightLegPrimaryComponent);
+            this._components.Add(rightForelegPrimaryComponent);
+            this._components.Add(rightFootPrimaryComponent);
+
             // Hips
 
             Link(leftLegPrimaryComponent, leftForelegPrimaryComponent, epsilon);
             Link(rightLegPrimaryComponent, rightForelegPrimaryComponent, epsilon);
 
             Segment hipSegment = new Segment(leftLegPrimaryComponent.Start, rightLegPrimaryComponent.Start);
-            this.hips = CreateJointObject(hipSegment.Center, null, "Hips");
+            this.hips = CreateJointObject(hipSegment.Center, "Hips");
 
-            this.leftLeg = CreateJointObject(hipSegment.Start, leftLegMesh, "Left Leg", hips);
-            this.leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, leftForelegMesh, "Left Foreleg");
-            this.leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, leftFootMesh, "Left Foot Start");
-            this.leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, null, "Left Foot End", leftFootStart);
+            this.leftLeg = CreateJointObject(hipSegment.Start, "Left Leg", hips);
+            this.leftForeleg = CreateJoint(leftLeg, leftLegPrimaryComponent, leftForelegPrimaryComponent, "Left Foreleg");
+            this.leftFootStart = CreateJoint(leftForeleg, leftForelegPrimaryComponent, leftFootPrimaryComponent, "Left Foot Start");
+            this.leftFootEnd = CreateJointObject(leftFootPrimaryComponent.End, "Left Foot End", leftFootStart);
 
-            this.rightLeg = CreateJointObject(hipSegment.End, rightLegMesh, "Right Leg", hips);
-            this.rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, rightForelegMesh, "Right Foreleg");
-            this.rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, rightFootMesh, "Right Foot Start");
-            this.rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, null, "Right Foot End", rightFootStart);
+            this.rightLeg = CreateJointObject(hipSegment.End, "Right Leg", hips);
+            this.rightForeleg = CreateJoint(rightLeg, rightLegPrimaryComponent, rightForelegPrimaryComponent, "Right Foreleg");
+            this.rightFootStart = CreateJoint(rightForeleg, rightForelegPrimaryComponent, rightFootPrimaryComponent, "Right Foot Start");
+            this.rightFootEnd = CreateJointObject(rightFootPrimaryComponent.End, "Right Foot End", rightFootStart);
 
             // Torso
 
@@ -209,22 +222,22 @@ namespace Bones.Core
             Link(rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, epsilon);
 
             Segment shoulderSegment = new Segment(leftUpperArmPrimaryComponent.Start, rightUpperArmPrimaryComponent.Start);
-            this.torso = CreateJointObject(shoulderSegment.Center, bodyMesh, "Torso", hips);
+            this.torso = CreateJointObject(shoulderSegment.Center, "Torso", hips);
 
-            this.leftArm = CreateJointObject(shoulderSegment.Start, leftUpperArmMesh, "Left Arm", torso);
-            this.leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, leftForearmMesh, "Left Forearm");
-            this.leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, leftHandMesh, "Left Hand Start");
-            this.leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, null, "Left Hand End", leftHandStart);
+            this.leftArm = CreateJointObject(shoulderSegment.Start, "Left Arm", torso);
+            this.leftForearm = CreateJoint(leftArm, leftUpperArmPrimaryComponent, leftForearmPrimaryComponent, "Left Forearm");
+            this.leftHandStart = CreateJoint(leftForearm, leftForearmPrimaryComponent, leftHandPrimaryComponent, "Left Hand Start");
+            this.leftHandEnd = CreateJointObject(leftHandPrimaryComponent.End, "Left Hand End", leftHandStart);
 
-            this.rightArm = CreateJointObject(shoulderSegment.End, rightUpperArmMesh, "Right Arm", torso);
-            this.rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, rightForearmMesh, "Right Forearm");
-            this.rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, rightHandMesh, "Right Hand Start");
-            this.rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, null, "Right Hand End", rightHandStart);
+            this.rightArm = CreateJointObject(shoulderSegment.End, "Right Arm", torso);
+            this.rightForearm = CreateJoint(rightArm, rightUpperArmPrimaryComponent, rightForearmPrimaryComponent, "Right Forearm");
+            this.rightHandStart = CreateJoint(rightForearm, rightForearmPrimaryComponent, rightHandPrimaryComponent, "Right Hand Start");
+            this.rightHandEnd = CreateJointObject(rightHandPrimaryComponent.End, "Right Hand End", rightHandStart);
 
             // Head
 
-            this.head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, headMesh, "Head Start");
-            this.headEnd = CreateJointObject(headPrimaryComponent.End, null, "Head End", head);
+            this.head = CreateJoint(torso, bodyPrimaryComponent, headPrimaryComponent, "Head Start");
+            this.headEnd = CreateJointObject(headPrimaryComponent.End, "Head End", head);
 
             hips.transform.SetParent(this.transform);
 
@@ -235,21 +248,18 @@ namespace Bones.Core
 
         #region Private Static Methods
 
-        private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, Mesh mesh, string name)
+        private GameObject CreateJoint(GameObject parentJoint, Segment parent, Segment child, string name)
         {
             return Link(parent, child, this._epsilonSquared)
-                ? CreateJointObject(parent.End, mesh, name, parentJoint)
-                : CreateJointObject(child.Start, mesh, name, CreateJointObject(child.End, mesh, $"intermediate-{name}", parentJoint));
+                ? CreateJointObject(parent.End, name, parentJoint)
+                : CreateJointObject(child.Start, name, CreateJointObject(child.End, $"intermediate-{name}", parentJoint));
         }
 
-        private GameObject CreateJointObject(Vector3 position, Mesh mesh, string name, GameObject parent = null)
+        private GameObject CreateJointObject(Vector3 position, string name, GameObject parent = null)
         {
-            GameObject joint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GameObject joint = new GameObject(name);
 
-            joint.transform.localScale = Vector3.one * 0.2f;
-            joint.name = name;
             joint.transform.position = position;
-            
             this._rig.Add(joint.transform);
 
             if (parent) joint.transform.SetParent(parent.transform);

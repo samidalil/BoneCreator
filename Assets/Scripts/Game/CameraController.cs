@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour {
         transform.position = target.position - transform.forward * dst * currentZoom;
         transform.LookAt(target.position);
 
-        float yawInput = Input.GetAxisRaw("CameraHorizontal");
+        float yawInput = -Input.GetAxisRaw("Horizontal");
         transform.RotateAround (target.position, Vector3.up, -yawInput * yawSpeed * Time.deltaTime);
     }
 

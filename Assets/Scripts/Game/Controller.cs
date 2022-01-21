@@ -22,7 +22,7 @@ namespace Bones.Game
 
         #region Fields
 
-        private Vector3 _direction = Vector3.one + Vector3.forward;
+        private Vector3 _direction = Vector3.up + Vector3.forward;
 
         private bool _launch = false;
 
@@ -61,6 +61,7 @@ namespace Bones.Game
 
             float rotation = Input.GetAxis("Horizontal");
 
+            this._direction = Quaternion.AngleAxis(this._rotationSpeed * rotation, Vector3.up) * this._direction;
         }
 
         #endregion

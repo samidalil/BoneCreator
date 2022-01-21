@@ -19,8 +19,8 @@ namespace Bones.Game
         private float _force;
 
         [SerializeField]
-        [Tooltip("Launch axis rotation speed")]
-        private float _rotationSpeed;
+        [Tooltip("Launch axis rotation sensitivity")]
+        private float _rotationSensitivity;
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace Bones.Game
 
             float rotation = Input.GetAxis("Horizontal");
 
-            this._direction = Quaternion.AngleAxis(this._rotationSpeed * rotation, Vector3.up) * this._direction;
+            this._direction = Quaternion.AngleAxis(this._rotationSensitivity * rotation, Vector3.up) * this._direction;
         }
 
         #endregion
